@@ -6,28 +6,25 @@ from email.mime.text import MIMEText
 from email.header import Header
 import os
 
-# ================= 邮箱硬编码配置区 =================
-# 发件人邮箱（由于你收件是1441417231@qq.com，这里默认发件人也写它，你也可以用自己的QQ发给自己）
+# ================= 邮箱配置区 =================
 MAIL_SENDER = "1441417231@qq.com"
-# 收件人邮箱（已为你绑定）
 MAIL_RECEIVER = "1441417231@qq.com"
-# ==================================================
+# ============================================
 
 def send_email_report(content):
-    # 优先从 GitHub Secrets 读取授权码，如果本地测试没有配置则留空
     auth_code = os.environ.get("MAIL_AUTH_CODE", "")
     
     if not auth_code:
-        print("⚠️ 未检测到 MAIL_AUTH_CODE 环境变量（如果是本地运行请配置授权码，GitHub Actions 会自动从 Secrets 读取），跳过邮件发送。")
+        print("⚠️ 未检测到 MAIL_AUTH_CODE 环境变量，跳过邮件发送。")
         return
 
     message = MIMEText(content, 'plain', 'utf-8')
-    message['From'] = Header(f"A股量化雷达 <{MAIL_SENDER}>", 'utf-8')
-    message['To'] = Header(f"接收者 <{MAIL_RECEIVER}>", 'utf-8')
+    # 修复点：严格按照 QQ 邮箱 SMTP 标准协议设置 From 和 To 头部
+    message['From'] = MAIL_SENDER
+    message['To'] = MAIL_RECEIVER
     message['Subject'] = Header(f"📊 A股多因子量化实战决策报告 ({datetime.now().strftime('%Y-%m-%d')})", 'utf-8')
 
     try:
-        # QQ 邮箱默认使用 SSL 465 端口
         smtp_server = "smtp.qq.com"
         port = 465
         
