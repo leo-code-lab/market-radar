@@ -58,10 +58,4 @@ def advanced_momentum_weather_radar():
             close_price, ma5, ma20 = latest['close'], latest['MA5'], latest['MA20']
             
             # 动量计算：最近5天指数的累计涨跌幅，判断中期气压变化趋势
-            index_5d_chg = ((df_recent.iloc[-1]['close'] - df_recent.iloc[-5]['close']) / df_recent.iloc[-5]['close']) * 100
-        else:
-            close_price, ma5, ma20, index_5d_chg = 0, 0, 0, 0.0
-
-        # 2. 短期数据：市场流动性、普涨率与情绪极值
-        df_spot = ak.stock_zh_a_spot_em()
-        if df_spot is not None
+            index_5d_chg = ((df_recent.iloc[-1]['close'] -
